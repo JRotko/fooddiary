@@ -150,7 +150,7 @@ export default function Cam({route, navigation}) {
           <TouchableOpacity
             style={styles.button}
             onPress={__takePicture}>
-            <Text style={styles.text}> Flip </Text>
+            <Text style={styles.text}> Take Photo </Text>
           </TouchableOpacity>
         </View>
       </Camera>

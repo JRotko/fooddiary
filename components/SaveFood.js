@@ -8,6 +8,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DatePicker from 'react-native-datepicker'
 import * as SQLite from'expo-sqlite';
 import {Picker} from '@react-native-picker/picker';
+import styles from './Style'
+
+
 
 
 export default function SaveFood({route, navigation}) {
@@ -27,6 +30,10 @@ export default function SaveFood({route, navigation}) {
     const [meal, setMeal] = useState('Breakfast')
     const [amount, setAmount] = useState(1)
 
+    useEffect(() => {
+      getResults()
+    }, [])
+
 
     // api request for food item data
     sd = {
@@ -44,6 +51,20 @@ export default function SaveFood({route, navigation}) {
       
     }
   
+    const getResults = () => {
+      fetch(searchUrl, searchParams)
+      .then(response => response.json())
+      .then(responseJson => setResults({
+        "carbs":responseJson.foods[0].nf_total_carbohydrate,
+        "calories":responseJson.foods[0].nf_calories,
+        "protein":responseJson.foods[0].nf_protein,
+        "fat":responseJson.foods[0].nf_total_fat,
+        "serving":responseJson.foods[0].serving_weight_grams,
+      }))
+      .catch(error => { 
+        Alert.alert('Error', error); 
+      })
+    }
   
     // save food entry and return home
     const save = () => {
@@ -58,9 +79,9 @@ export default function SaveFood({route, navigation}) {
 
 
     return (
-      <View>
-        <Button buttonStyle={{width: 250}} rased icon={{name: 'save', color: 'white'}} onPress={save} title="Save" />
-        <Text>{foodName}</Text>
+      <View style={styles.container}>
+        <Button buttonStyle={styles.button} rased icon={{name: 'save', color: 'white'}} onPress={save} title="Save" />
+        <Text style={{fontSize: 18, fontWeight: "bold"}}>{foodName}</Text>
         <Text>Serving size {results.serving} grams</Text>
         <Text>Calories: {results.calories}</Text>
         <Text>Carbs: {results.carbs}</Text>
@@ -69,6 +90,7 @@ export default function SaveFood({route, navigation}) {
 
         <Input onChangeText={amount => setAmount(amount)} placeholder="Amount" label="amount" keyboadType=""/>
         <Picker
+          style={{width: 300}}
           selectedValue={meal}
           onValueChange={(itemValue, itemIndex) =>
             setMeal(itemValue)}
@@ -81,11 +103,3 @@ export default function SaveFood({route, navigation}) {
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });

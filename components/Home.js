@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SQLite from'expo-sqlite';
 import { StyleSheet, Text, View, FlatList, Image, ScrollView } from 'react-native';
 import * as FileSystem from 'expo-file-system';
+import styles from './Style'
 
 
 export default function Home({navigation}) {
@@ -93,18 +94,14 @@ export default function Home({navigation}) {
         if (breakfastPhoto != '') {
           return (
             <Image 
-            style={{
-              width: 50,
-              height: 200,
-              resizeMode: 'stretch',
-            }}
+            style={styles.image}
             source={{
               uri: breakfastPhoto
           }} />
           )
         } else {
           return (
-            <Button title='Add photo' onPress={() => navigation.navigate('Cam', {meal: "Breakfast", day: date.toISOString()})} />
+            <Button buttonStyle={styles.button} title='Add photo' onPress={() => navigation.navigate('Cam', {meal: "Breakfast", day: date.toISOString()})} />
           )
         }
         }
@@ -114,18 +111,14 @@ export default function Home({navigation}) {
         if (lunchPhoto != '') {
           return (
             <Image 
-            style={{
-              width: 50,
-              height: 200,
-              resizeMode: 'stretch',
-            }}
+            style={styles.image}
             source={{
               uri: lunchPhoto
           }} />
           )
         } else {
           return (
-            <Button title='Add photo' onPress={() => navigation.navigate('Cam', {meal: "Lunch", day: date.toISOString()})} />
+            <Button buttonStyle={styles.button} title='Add photo' onPress={() => navigation.navigate('Cam', {meal: "Lunch", day: date.toISOString()})} />
           )
         }      
       }
@@ -134,18 +127,14 @@ export default function Home({navigation}) {
         if (dinnerPhoto != '') {
           return (
             <Image 
-            style={{
-              width: 50,
-              height: 200,
-              resizeMode: 'stretch',
-            }}
+            style={styles.image}
             source={{
               uri: dinnerPhoto
           }} />
           )
         } else {
           return (
-            <Button title='Add photo' onPress={() => navigation.navigate('Cam', {meal: "Dinner", day: date.toISOString()})} />
+            <Button buttonStyle={styles.button} title='Add photo' onPress={() => navigation.navigate('Cam', {meal: "Dinner", day: date.toISOString()})} />
           )
         }
         
@@ -202,45 +191,60 @@ export default function Home({navigation}) {
       setDinnerPhoto('')
     }
 
+
     const FoodList = (props) => {
       return (
         <View>
-        <Text>{props.photo}</Text>
-        <Photo meal={props.photo}/>
-        <FlatList 
-              style={{marginLeft : "5%"}}
-              keyExtractor={(item, index) => index.toString()} 
-              renderItem={({item}) => 
+          <View style={styles.header}>
+            <Text style={{fontSize: 18, fontWeight: "bold"}}>{props.photo}</Text>
+          </View>
+          <View style={styles.foodList}>
+
+            <View style={styles.photo}>
+              <Photo style={styles.photo} meal={props.photo}/>
+            </View>
+
+            <View>
+              {props.meal.map((item) => {
+              return (
                 <View>
-                  <Text style={{fontSize: 18, fontWeight: "bold"}}>{item.food}</Text>
-                  <Text style={{fontSize: 18, fontWeight: "bold"}}>Amount {item.amount}</Text>
+                  <Text style={{fontSize: 18, fontWeight: "bold"}}>{item.amount} x {item.food}</Text>
                   <Text style={{fontSize: 12, fontWeight: "normal"}}>Calories {item.calories}</Text>      
                   <Text style={{fontSize: 12, fontWeight: "normal"}}>Carbs {item.carbs}</Text>                
                   <Text style={{fontSize: 12, fontWeight: "normal"}}>Protein {item.protein}</Text>                
                   <Text style={{fontSize: 12, fontWeight: "normal"}}>Fat {item.fat}</Text>
-                  <Icon type="material" color="red" name="delete" onPress={() => deleteProduct(item.id)}/>
-                </View>}
-              data={props.meal}
-              ItemSeparatorComponent={listSeparator} /> 
+                  <Button buttonStyle={styles.deleteButton} title='Delete' titleStyle={{fontSize: 12}} onPress={() => navigation.navigate('Search', {day: date.toISOString()})} />
+                </View>
+              );
+              })}
+            </View>
+          
         </View>
+       </View>
       )
     }
 
     return (
-      <View>
-        <Button title='Add Food' onPress={() => navigation.navigate('Search', {day: date.toISOString()})} />
+      <View style={styles.container}>
+        <View style={styles.top}>
+            <DateTimePicker
+              style={styles.datePicker}
+              mode="date" 
+              value={date}
+              onChange={(e, d) => setDate(new Date(d))}
+            />
+            <Button buttonStyle={styles.button} title='Add Food' onPress={() => navigation.navigate('Search', {day: date.toISOString()})} />
 
-        <DateTimePicker 
-          mode="date" 
-          value={date}
-          onChange={(e, d) => setDate(new Date(d))}
-        />
-        <ScrollView>
-          <FoodList meal={breakfast} photo="Breakfast"/>
-          <FoodList meal={lunch} photo="Lunch"/>
-          <FoodList meal={dinner} photo="Dinner"/>
-        </ScrollView>
-      </View>
+        </View>
+        <View style={styles.list}>
+          <ScrollView >
+            <FoodList meal={breakfast} photo="Breakfast"/>
+            <FoodList meal={lunch} photo="Lunch"/>
+            <FoodList meal={dinner} photo="Dinner"/>
+          </ScrollView>
+        </View>
+        
+      </View>    
     )
-  }
+}
 

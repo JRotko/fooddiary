@@ -7,15 +7,12 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DatePicker from 'react-native-datepicker'
 import * as SQLite from'expo-sqlite';
+import styles from './Style'
+
 
 
 export default function Search({ route, navigation}) {
   const {day} = route.params
-  //const jsDay = new Date(day)
-  
-  
-  // followingDay = new Date(jsDay.getTime() + 86400000)
-  // previousDay = new Date(jsDay.getTime() - 86400000)
 
   const [keyword, setKeyword] = useState('')
   const [instantresults, setInstantresults] = useState('')
@@ -68,29 +65,26 @@ export default function Search({ route, navigation}) {
 
   return (
     <View style={styles.container}>
-      <Input onChangeText={keyword => setKeyword(keyword)} placeholder="Search..." value={keyword} />
-
-      <FlatList 
-          style={{marginLeft : "5%"}}
-          keyExtractor={(item, index) => index.toString()} 
-          renderItem={({item}) => 
-            <View>
-              <Text style={{fontSize: 18, fontWeight: "bold"}}>{item.food_name}</Text>
-              <Image source={{uri:item.photo.thumb}} style = {{ width: 30, height: 30 }}/>
-              <Button buttonStyle={{width: 30}} rased icon={{name: 'add', color: 'white'}} onPress={() => navigation.navigate('SaveFood', {foodName: item.food_name, day: day})} title="add" />
-            </View>}
-          data={instantresults}
-          ItemSeparatorComponent={listSeparator} /> 
+      <View style={styles.searchField}>
+        <Input onChangeText={keyword => setKeyword(keyword)} placeholder="Search..." value={keyword} />
+      </View>
+      <View style={styles.list}>
+        <FlatList 
+            style={{marginLeft : "5%"}}
+            keyExtractor={(item, index) => index.toString()} 
+            renderItem={({item}) => 
+              <View style={styles.searchOrientation}>
+                <Image source={{uri:item.photo.thumb}} style ={styles.searchImage}/>
+                <Text style={{fontSize: 18, fontWeight: "bold"}}>{item.food_name}</Text>
+                <View style={{alignSelf: 'flex-end'}}>
+                  <Button buttonStyle={styles.searchButton} rased icon={{name: 'add', color: 'white'}} onPress={() => navigation.navigate('SaveFood', {foodName: item.food_name, day: day})} title="add" />
+                </View>
+              </View>}
+            data={instantresults}
+            ItemSeparatorComponent={listSeparator} /> 
+      </View>
       <StatusBar style="auto" />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

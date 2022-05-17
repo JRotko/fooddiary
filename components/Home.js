@@ -65,7 +65,7 @@ export default function Home({navigation}) {
       refresh()
     }
 
-
+    // if query returns a non empty array, sets the url of first item as photo
     const getPhoto = (m) => {
         db.transaction(tx => {
           tx.executeSql('SELECT photo FROM photos WHERE day = ? AND meal = ?;', [date.toISOString(), m],
@@ -87,7 +87,7 @@ export default function Home({navigation}) {
         }) 
     }
 
-    
+    //if photo has been set, render photo, else render "add photo" button
     const Photo = (props) => {
       getPhoto(props.meal)
       if (props.meal === "Breakfast") {
@@ -144,7 +144,7 @@ export default function Home({navigation}) {
 
     }
     
-
+    // to have all dates in same format
     const resetHours = () => {
       date.setHours(0,0,0,0)
     }
@@ -163,35 +163,15 @@ export default function Home({navigation}) {
       refresh()
     }, [date, isFocused])
 
-    const listSeparator = () => {
-      return (
-        <View
-          style={{
-            height: 1,
-            width: "80%",
-            backgroundColor: "#CED0CE",
-            marginLeft: "10%"
-          }}
-        />
-      );
-    };
 
-    // console.log(breakfast)
-    // console.log(lunch)
-    // console.log(dinner)
-
-    // const logg = async () => {
-    //   console.log(await FileSystem.readDirectoryAsync(FileSystem.documentDirectory + 'photos'))
-    // }
-    // logg()
-
+    // photos have to be set to blank every render. Otherwise photos do not change when switching date
     const resetPhotos = () => {
       setBreakfastPhoto('')
       setLunchPhoto('')
       setDinnerPhoto('')
     }
 
-
+    // Returns header, photo and meals
     const FoodList = (props) => {
       return (
         <View>
@@ -213,7 +193,7 @@ export default function Home({navigation}) {
                   <Text style={{fontSize: 12, fontWeight: "normal"}}>Carbs {item.carbs}</Text>                
                   <Text style={{fontSize: 12, fontWeight: "normal"}}>Protein {item.protein}</Text>                
                   <Text style={{fontSize: 12, fontWeight: "normal"}}>Fat {item.fat}</Text>
-                  <Button buttonStyle={styles.deleteButton} title='Delete' titleStyle={{fontSize: 12}} onPress={() => navigation.navigate('Search', {day: date.toISOString()})} />
+                  <Button buttonStyle={styles.deleteButton} title='Delete' titleStyle={{fontSize: 12}} onPress={() => deleteProduct(item.id)} />
                 </View>
               );
               })}

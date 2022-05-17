@@ -17,16 +17,7 @@ export default function SaveFood({route, navigation}) {
     const {foodName} = route.params
     const {day} = route.params
     const db = SQLite.openDatabase('meal.db');
-
-
-    // hard coded for testing
-    const [results, setResults] = useState({
-      "carbs":100,
-        "calories":100,
-        "protein":100,
-        "fat":100,
-        "serving":100,
-    })
+    const [results, setResults] = useState({})
     const [meal, setMeal] = useState('Breakfast')
     const [amount, setAmount] = useState(1)
 

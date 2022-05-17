@@ -21,16 +21,6 @@ export default function Search({ route, navigation}) {
     getResults()
   }, [keyword])
 
-    // delete whole db (for dev)
-  const deleteDB = () => {
-    db.transaction(tx => {
-      tx.executeSql('DROP TABLE meals;'), null, null
-    })
-  }
-
-
-  
-
   const instantUrl = 'https://trackapi.nutritionix.com/v2/search/instant?&query='
   const instantParams = {
     headers: {

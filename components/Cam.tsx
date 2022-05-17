@@ -46,7 +46,6 @@ export default function Cam({route, navigation}) {
   const __retakePicture = () => {
     setCapturedImage(null)
     setPreviewVisible(false)
-    //__startCamera()
   }
 
   const __savePhoto = async () => {
